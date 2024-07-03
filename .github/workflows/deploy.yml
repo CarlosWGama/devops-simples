@@ -1,0 +1,35 @@
+name: Deploy no GitHub Pages
+on:
+    push:
+        branches:
+            - main
+jobs:
+
+    teste:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Libera acesso ao Repositório
+              uses: actions/checkout@v4
+
+            - name: Libera uso do Node
+              uses: actions/setup-node@v4
+
+            - run: npm install
+            - run: npm test
+
+    deploy:
+        needs: teste
+        runs-on: ubuntu-latest
+        permissions: 
+            contents: write
+        steps:
+            - name: Libera o acesso ao repositório
+              uses: actions/checkout@v4
+
+            - name: Faz o merge pelo git
+              uses: git config user.email "carloswgama@gmail.com"
+            - uses: git config user.name "Carlos W. Gama"
+            - uses: git fetch
+            - uses: git checkout -B gh-pages
+            - uses: git merge main
+            - uses: git push --force origin gh-pages
